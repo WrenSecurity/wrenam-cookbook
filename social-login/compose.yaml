@@ -1,0 +1,18 @@
+services:
+  wrenam:
+    image: wrenam-cookbook-social-login
+    hostname: wrenam.wrensecurity.local
+    build:
+      context: .
+      dockerfile: docker/wrenam/Dockerfile
+    environment:
+      WRENAM_ADMIN_PASSWORD: password
+      WRENAM_SERVER_URL: https://wrenam.wrensecurity.local:8443
+    ports:
+      - "127.0.0.1:8443:8443"
+    volumes:
+      - "./assets/github-mark.svg:/usr/local/tomcat/webapps/auth/XUI/images/github-mark.svg:ro"
+      - "wrenam-data:/srv/wrenam"
+
+volumes:
+  wrenam-data:

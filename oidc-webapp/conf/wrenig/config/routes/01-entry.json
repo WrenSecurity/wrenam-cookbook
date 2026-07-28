@@ -1,0 +1,16 @@
+{
+  "name": "entry",
+  "condition": "${matches(request.uri.path, '^/$')}",
+  "handler": {
+    "type": "StaticResponseHandler",
+    "config": {
+      "status": 302,
+      "reason": "Found",
+      "headers": {
+        "Location": [
+          "/userinfo"
+        ]
+      }
+    }
+  }
+}

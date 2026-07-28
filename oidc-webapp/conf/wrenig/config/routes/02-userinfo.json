@@ -1,0 +1,71 @@
+{
+  "name": "userinfo",
+  "condition": "${matches(request.uri.path, '^/(userinfo|openid)(/.*)?$')}",
+  "handler": {
+    "type": "Chain",
+    "config": {
+      "filters": [
+        {
+          "name": "oidc-client",
+          "type": "OAuth2ClientFilter",
+          "config": {
+            "clientEndpoint": "/openid",
+            "registrations": "am-registration",
+            "failureHandler": {
+              "type": "StaticResponseHandler",
+              "config": {
+                "status": 500,
+                "reason": "OIDC login failed"
+              }
+            },
+            "requireHttps": true
+          }
+        },
+        {
+          "name": "response-headers",
+          "type": "HeaderFilter",
+          "config": {
+            "messageType": "RESPONSE",
+            "add": {
+              "Cache-Control": [
+                "no-store"
+              ],
+              "Content-Type": [
+                "application/json; charset=UTF-8"
+              ]
+            }
+          }
+        }
+      ],
+      "handler": {
+        "name": "userinfo-response",
+        "type": "ScriptableHandler",
+        "config": {
+          "type": "application/x-groovy",
+          "file": "org/wrensecurity/wrenig/handler/UserInfoResponseHandler.groovy"
+        }
+      }
+    }
+  },
+  "heap": [
+    {
+      "name": "am-registration",
+      "type": "ClientRegistration",
+      "config": {
+        "clientId": "oidc-webapp",
+        "clientSecret": "changeit",
+        "scopes": [
+          "openid",
+          "profile"
+        ],
+        "issuer": {
+          "name": "am-issuer",
+          "type": "Issuer",
+          "config": {
+            "wellKnownEndpoint": "https://wrenam.wrensecurity.local:8443/auth/oauth2/.well-known/openid-configuration"
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "handler": {
+    "type": "Router",
+    "name": "_router",
+    "baseURI": "https://protected.wrensecurity.local"
+  },
+  "router": {
+    "type": "Router",
+    "config": {
+      "scanInterval": "disabled"
+    }
+  }
+}

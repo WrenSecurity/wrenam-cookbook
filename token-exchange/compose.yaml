@@ -1,0 +1,17 @@
+services:
+  wrenam:
+    image: wrenam-cookbook-token-exchange
+    hostname: wrenam.wrensecurity.local
+    build:
+      context: .
+      dockerfile: docker/wrenam/Dockerfile
+    environment:
+      WRENAM_ADMIN_PASSWORD: password
+      WRENAM_SERVER_URL: https://wrenam.wrensecurity.local:8443
+    ports:
+      - "8443:8443"
+    volumes:
+      - "wrenam-data:/srv/wrenam"
+
+volumes:
+  wrenam-data:

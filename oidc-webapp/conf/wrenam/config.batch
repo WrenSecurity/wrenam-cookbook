@@ -1,0 +1,2 @@
+add-svc-realm --realm / --servicename OAuth2Provider --datafile setup/oauth2-provider.properties
+create-agent --realm / --agenttype OAuth2Client --agentname oidc-webapp --datafile setup/oidc-webapp.properties

@@ -1,0 +1,29 @@
+{
+  "name": "saml",
+  "condition": "${matches(request.uri.path, '^/saml')}",
+  "handler": {
+    "type": "Chain",
+    "config": {
+      "filters": [
+        {
+          "name": "capture-saml-response",
+          "type": "ScriptableFilter",
+          "config": {
+            "type": "application/x-groovy",
+            "file": "org/wrensecurity/wrenig/filter/CaptureSamlResponse.groovy"
+          }
+        }
+      ],
+      "handler": {
+        "name": "saml-federation",
+        "type": "SamlFederationHandler",
+        "config": {
+          "assertionMapping": {
+            "username": "uid"
+          },
+          "redirectURI": "/"
+        }
+      }
+    }
+  }
+}

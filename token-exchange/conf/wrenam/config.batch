@@ -1,0 +1,5 @@
+# Configure SHA-256 for generated SAML assertions
+set-attr-defs --servicename sunFAMFederationCommon --schematype global --datafile setup/saml-algorithms.properties
+
+# Publish the Wren:AM session-to-SAML REST STS instance
+create-sub-cfg --realm / --servicename RestSecurityTokenService --subconfigname serverconfig --subconfigid session-to-saml --datafile setup/token-exchange.properties

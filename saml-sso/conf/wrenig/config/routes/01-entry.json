@@ -1,0 +1,40 @@
+{
+  "name": "entry",
+  "condition": "${matches(request.uri.path, '^/$')}",
+  "handler": {
+    "type": "DispatchHandler",
+    "config": {
+      "bindings": [
+        {
+          "condition": "${empty session.username}",
+          "handler": {
+            "type": "StaticResponseHandler",
+            "config": {
+              "status": 302,
+              "reason": "Found",
+              "headers": {
+                "Location": [
+                  "/saml/SPInitiatedSSO?metaAlias=/sp&idpEntityID=samltest-idp"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "handler": {
+            "type": "StaticResponseHandler",
+            "config": {
+              "status": 302,
+              "reason": "Found",
+              "headers": {
+                "Location": [
+                  "/assertion"
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

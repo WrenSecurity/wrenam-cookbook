@@ -1,0 +1,5 @@
+create-auth-instance --realm / --name githubLogin --authtype OAuth
+update-auth-instance --realm / --name githubLogin --datafile setup/github-login.properties
+create-auth-cfg --realm / --name githubLogin
+update-auth-cfg-entr --realm / --name githubLogin --datafile setup/github-login.entries
+add-svc-realm --realm / --servicename socialAuthNService --datafile setup/social-authentication.properties

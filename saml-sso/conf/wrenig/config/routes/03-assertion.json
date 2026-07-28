@@ -1,0 +1,38 @@
+{
+  "name": "assertion",
+  "condition": "${matches(request.uri.path, '^/assertion$')}",
+  "handler": {
+    "type": "DispatchHandler",
+    "config": {
+      "bindings": [
+        {
+          "condition": "${empty session.username}",
+          "handler": {
+            "type": "StaticResponseHandler",
+            "config": {
+              "status": 401,
+              "reason": "SAML authentication required"
+            }
+          }
+        },
+        {
+          "handler": {
+            "type": "StaticResponseHandler",
+            "config": {
+              "status": 200,
+              "headers": {
+                "Cache-Control": [
+                  "no-store"
+                ],
+                "Content-Type": [
+                  "application/xml; charset=UTF-8"
+                ]
+              },
+              "entity": "${session.samlResponse}"
+            }
+          }
+        }
+      ]
+    }
+  }
+}

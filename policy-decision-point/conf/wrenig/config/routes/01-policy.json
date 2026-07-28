@@ -1,0 +1,47 @@
+{
+  "name": "policy-enforcement",
+  "condition": "${matches(request.uri.path, '^/.*')}",
+  "handler": {
+    "type": "Chain",
+    "config": {
+      "filters": [
+        {
+          "name": "am-session",
+          "type": "SingleSignOnFilter",
+          "config": {
+            "openamUrl": "https://wrenam.wrensecurity.local:8443/auth"
+          }
+        },
+        {
+          "name": "am-policy",
+          "type": "PolicyEnforcementFilter",
+          "config": {
+            "openamUrl": "https://wrenam.wrensecurity.local:8443/auth",
+            "pepUsername": "amAdmin",
+            "pepPassword": "password",
+            "ssoTokenSubject": "${contexts.ssoToken.value}",
+            "cache": {
+              "enabled": false
+            }
+          }
+        }
+      ],
+      "handler": {
+        "name": "access-granted",
+        "type": "StaticResponseHandler",
+        "config": {
+          "status": 200,
+          "headers": {
+            "Content-Type": [
+              "text/plain; charset=UTF-8"
+            ],
+            "Cache-Control": [
+              "no-store"
+            ]
+          },
+          "entity": "Access granted"
+        }
+      }
+    }
+  }
+}

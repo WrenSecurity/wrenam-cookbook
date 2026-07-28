@@ -1,0 +1,7 @@
+# Create the employee identity and group used by the restricted resource.
+create-identity --realm / --idname employee --idtype User --attributevalues userpassword=changeit inetuserstatus=Active cn=Employee sn=Employee
+create-identity --realm / --idname employees --idtype Group
+add-member --realm / --memberidname employee --memberidtype User --idname employees --idtype Group
+
+# Import the public authenticated-user policy and the employee-only policy.
+create-xacml --realm / --xmlfile setup/pdp-policies.xml

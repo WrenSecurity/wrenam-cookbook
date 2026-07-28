@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PolicySet xmlns="urn:oasis:names:tc:xacml:3.0:core:schema:wd-17" PolicySetId="cookbook-pdp" Version="1.0" PolicyCombiningAlgId="urn:oasis:names:tc:xacml:3.0:policy-combining-algorithm:deny-overrides">
+  <Target/>
+  <Policy PolicyId="cookbook-pdp-allow-authenticated" Version="1.0" RuleCombiningAlgId="urn:oasis:names:tc:xacml:3.0:rule-combining-algorithm:deny-overrides">
+    <Description>Allow authenticated users to reach the cookbook PDP root.</Description>
+    <Target>
+      <AnyOf>
+        <AllOf>
+          <Match MatchId="urn:sun:opensso:entitlement:json-subject-match">
+            <AttributeValue DataType="urn:sun:opensso:entitlement:json-subject-type:org.forgerock.openam.entitlement.conditions.subject.AuthenticatedUsers">{}</AttributeValue>
+            <AttributeDesignator Category="urn:oasis:names:tc:xacml:1.0:subject-category:access-subject" AttributeId="urn:sun:opensso:entitlement:json-subject" DataType="urn:sun:opensso:entitlement:json-subject-type:org.forgerock.openam.entitlement.conditions.subject.AuthenticatedUsers" MustBePresent="true"/>
+          </Match>
+        </AllOf>
+      </AnyOf>
+      <AnyOf>
+        <AllOf>
+          <Match MatchId="urn:sun:opensso:entitlement:resource-match:application:iPlanetAMWebAgentService">
+            <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">https://protected.wrensecurity.local:443/</AttributeValue>
+            <AttributeDesignator Category="urn:oasis:names:tc:xacml:3.0:attribute-category:resource" AttributeId="urn:oasis:names:tc:xacml:1.0:resource:resource-id" DataType="http://www.w3.org/2001/XMLSchema#string" MustBePresent="true"/>
+          </Match>
+        </AllOf>
+      </AnyOf>
+      <AnyOf>
+        <AllOf>
+          <Match MatchId="urn:sun:opensso:application-match">
+            <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">iPlanetAMWebAgentService</AttributeValue>
+            <AttributeDesignator Category="urn:sun:opensso:application-category" AttributeId="urn:sun:opensso:application-id" DataType="http://www.w3.org/2001/XMLSchema#string" MustBePresent="false"/>
+          </Match>
+        </AllOf>
+      </AnyOf>
+      <AnyOf>
+        <AllOf>
+          <Match MatchId="urn:sun:opensso:entitlement:action-match:application:iPlanetAMWebAgentService">
+            <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">GET</AttributeValue>
+            <AttributeDesignator Category="urn:oasis:names:tc:xacml:3.0:attribute-category:action" AttributeId="urn:oasis:names:tc:xacml:1.0:action:action-id" DataType="http://www.w3.org/2001/XMLSchema#string" MustBePresent="true"/>
+          </Match>
+        </AllOf>
+      </AnyOf>
+    </Target>
+    <VariableDefinition VariableId="sun.opensso.entitlement.applicationName">
+      <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">iPlanetAMWebAgentService</AttributeValue>
+    </VariableDefinition>
+    <Rule RuleId="allow-authenticated-users" Effect="Permit">
+      <Target>
+        <AnyOf>
+          <AllOf>
+            <Match MatchId="urn:sun:opensso:entitlement:action-match:application:iPlanetAMWebAgentService">
+              <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">GET</AttributeValue>
+              <AttributeDesignator Category="urn:oasis:names:tc:xacml:3.0:attribute-category:action" AttributeId="urn:oasis:names:tc:xacml:1.0:action:action-id" DataType="http://www.w3.org/2001/XMLSchema#string" MustBePresent="true"/>
+            </Match>
+          </AllOf>
+        </AnyOf>
+      </Target>
+      <Condition>
+        <Apply FunctionId="urn:sun:opensso:entitlement:json-subject-and-condiiton-satisfied">
+          <AttributeValue DataType="urn:sun:opensso:entitlement:json-subject-type:org.forgerock.openam.entitlement.conditions.subject.AuthenticatedUsers" privilegeComponent="entitlementSubject">{}</AttributeValue>
+        </Apply>
+      </Condition>
+    </Rule>
+  </Policy>
+  <Policy PolicyId="cookbook-pdp-allow-employees" Version="1.0" RuleCombiningAlgId="urn:oasis:names:tc:xacml:3.0:rule-combining-algorithm:deny-overrides">
+    <Description>Allow employees to reach the internal area.</Description>
+    <Target>
+      <AnyOf>
+        <AllOf>
+          <Match MatchId="urn:sun:opensso:entitlement:json-subject-match">
+            <AttributeValue DataType="urn:sun:opensso:entitlement:json-subject-type:org.forgerock.openam.entitlement.conditions.subject.IdentitySubject">["id=employees,ou=group,dc=am,dc=example,dc=com"]</AttributeValue>
+            <AttributeDesignator Category="urn:oasis:names:tc:xacml:1.0:subject-category:access-subject" AttributeId="urn:sun:opensso:entitlement:json-subject" DataType="urn:sun:opensso:entitlement:json-subject-type:org.forgerock.openam.entitlement.conditions.subject.IdentitySubject" MustBePresent="true"/>
+          </Match>
+        </AllOf>
+      </AnyOf>
+      <AnyOf>
+        <AllOf>
+          <Match MatchId="urn:sun:opensso:entitlement:resource-match:application:iPlanetAMWebAgentService">
+            <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">https://protected.wrensecurity.local:443/internal</AttributeValue>
+            <AttributeDesignator Category="urn:oasis:names:tc:xacml:3.0:attribute-category:resource" AttributeId="urn:oasis:names:tc:xacml:1.0:resource:resource-id" DataType="http://www.w3.org/2001/XMLSchema#string" MustBePresent="true"/>
+          </Match>
+        </AllOf>
+      </AnyOf>
+      <AnyOf>
+        <AllOf>
+          <Match MatchId="urn:sun:opensso:application-match">
+            <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">iPlanetAMWebAgentService</AttributeValue>
+            <AttributeDesignator Category="urn:sun:opensso:application-category" AttributeId="urn:sun:opensso:application-id" DataType="http://www.w3.org/2001/XMLSchema#string" MustBePresent="false"/>
+          </Match>
+        </AllOf>
+      </AnyOf>
+      <AnyOf>
+        <AllOf>
+          <Match MatchId="urn:sun:opensso:entitlement:action-match:application:iPlanetAMWebAgentService">
+            <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">GET</AttributeValue>
+            <AttributeDesignator Category="urn:oasis:names:tc:xacml:3.0:attribute-category:action" AttributeId="urn:oasis:names:tc:xacml:1.0:action:action-id" DataType="http://www.w3.org/2001/XMLSchema#string" MustBePresent="true"/>
+          </Match>
+        </AllOf>
+      </AnyOf>
+    </Target>
+    <VariableDefinition VariableId="sun.opensso.entitlement.applicationName">
+      <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">iPlanetAMWebAgentService</AttributeValue>
+    </VariableDefinition>
+    <Rule RuleId="allow-employees" Effect="Permit">
+      <Target>
+        <AnyOf>
+          <AllOf>
+            <Match MatchId="urn:sun:opensso:entitlement:action-match:application:iPlanetAMWebAgentService">
+              <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">GET</AttributeValue>
+              <AttributeDesignator Category="urn:oasis:names:tc:xacml:3.0:attribute-category:action" AttributeId="urn:oasis:names:tc:xacml:1.0:action:action-id" DataType="http://www.w3.org/2001/XMLSchema#string" MustBePresent="true"/>
+            </Match>
+          </AllOf>
+        </AnyOf>
+      </Target>
+      <Condition>
+        <Apply FunctionId="urn:sun:opensso:entitlement:json-subject-and-condiiton-satisfied">
+          <AttributeValue DataType="urn:sun:opensso:entitlement:json-subject-type:org.forgerock.openam.entitlement.conditions.subject.IdentitySubject" privilegeComponent="entitlementSubject">["id=employees,ou=group,dc=am,dc=example,dc=com"]</AttributeValue>
+        </Apply>
+      </Condition>
+    </Rule>
+  </Policy>
+</PolicySet>

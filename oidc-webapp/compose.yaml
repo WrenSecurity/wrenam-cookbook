@@ -1,0 +1,31 @@
+services:
+  wrenam:
+    image: wrenam-cookbook-oidc-webapp
+    hostname: wrenam.wrensecurity.local
+    build:
+      context: .
+      dockerfile: docker/wrenam/Dockerfile
+    environment:
+      WRENAM_ADMIN_PASSWORD: password
+      WRENAM_SERVER_URL: https://wrenam.wrensecurity.local:8443
+    ports:
+      - "8443:8443"
+    volumes:
+      - "wrenam-data:/srv/wrenam"
+  wrenig:
+    image: wrenam-cookbook-oidc-webapp-ig
+    hostname: protected.wrensecurity.local
+    build:
+      context: .
+      dockerfile: docker/wrenig/Dockerfile
+    ports:
+      - "443:8443"
+    volumes:
+      - "./conf/wrenig/config:/srv/wrenig/config:ro"
+      - "./conf/wrenig/scripts:/srv/wrenig/scripts:ro"
+    depends_on:
+      wrenam:
+        condition: service_healthy
+
+volumes:
+  wrenam-data:
